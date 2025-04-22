@@ -1,16 +1,16 @@
 steps:
-# Step 1: Docker Build
-- name: 'gcr.io/cloud-builders/docker'
-  args: [ 'build', '-t', 'us-central1-docker.pkg.dev/${PROJECT_ID}/demo-repo-03/flaskimage1:$COMMIT_SHA', '.' ]
-
-# Step 2: Docker Push
-- name: 'gcr.io/cloud-builders/docker'
-  args: [ 'push', 'us-central1-docker.pkg.dev/${PROJECT_ID}/demo-repo-03/flaskimage1:$COMMIT_SHA']
-
-# Step 3: Deploy to App (cloud-sdk image, um im Image gcloud-Befehle aufzurufen)
+# Step: Deploy
 - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-  entrypoint: 'bash'
-  args: ['-c', 'gcloud config set app/cloud_build_timeout 1600 && gcloud app deploy']
+  args:
+  - gcloud
+  - functions
+  - deploy
+  - myfunction_cicd
+  - --region=us-central1
+  - --source=.
+  - --trigger-http
+  - --runtime=python312
+  - --allow-unauthenticated
 
 options:
   logging: CLOUD_LOGGING_ONLY
